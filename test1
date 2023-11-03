@@ -1,0 +1,29 @@
+**Risk identifier:** #RIDMISSING
+
+**System:** https://www.danskboligforsikring.dk
+
+**Risk:** 7.4 (High) - CVE from NIST: https://nvd.nist.gov/vuln/detail/CVE-2021-3618
+
+**Analysis:**
+ALPACA is an application layer protocol content confusion attack, exploiting TLS servers implementing different protocols but using compatible certificates, such as multi-domain or wildcard certificates. A MiTM attacker having access to victim's traffic at the TCP/IP layer can redirect traffic from one subdomain to another, resulting in a valid TLS session. This breaks the authentication of TLS and cross-protocol attacks may be possible where the behavior of one protocol service may compromise the other at the application layer.
+
+**Effect:**
+For the specific attacks on HTTPS, the attacker can potentially steal cookies or perform cross-site scripting attacks.
+However, the potential consequences to the general ALPACA attack are dependent on the interactions of two unknown protocols, so any number of undesirable behaviors may be possible.
+
+
+**Recommendations:** 
+Two extensions in TLS can provide some protection to the application layer protocol: SNI and ALPN. With SNI, the client can let the server know about the hostname it wants to connect to, which is useful in virtual hosting configurations. the SNI standard  also allows the server to terminate the connection if the hostname does not match the expected hostname of the server, which would prevent some ALPACA attacks in practice. Though the extension can be a bit difficult to configure.
+Compared to SNI, ALPN works a little differently. Here the extension mandates strict behavior, so a server supporting ALPN should terminate the connection if no supported protocol is requested by the client. Which can be helpful to stop some ALPACA attacks
+Otherwise a recommendation is to update the whole system frequently.
+
+**Identified With:** This vulnerability was found using Shodan.io - https://www.shodan.io/host/37.49.140.234
+The vulnerability was spotted on the main domain. 
+
+**References:**
+
+https://alpaca-attack.com/
+
+https://bugzilla.redhat.com/show_bug.cgi?id=1975623
+
+https://lists.debian.org/debian-lts-announce/2022/11/msg00031.html
